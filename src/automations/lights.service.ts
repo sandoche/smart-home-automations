@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { api, discovery } from 'node-hue-api';
+import { api, discovery, v3 } from 'node-hue-api';
 import { ConfigService } from '@nestjs/config';
 import { discover } from 'wikari';
 import type { lights } from './lights.type';
@@ -98,6 +98,38 @@ export class LightsService {
           await this.hueApi.lights.setLightState(light.id, {
             off: true,
           });
+        },
+        isOn: async () => {
+          const state = await this.hueApi.lights.getLightState(light.id);
+          return state.on;
+        },
+        reset: async () => {
+          await this.hueApi.lights.setLightState(light.id, {
+            bri: 254,
+            ct: 366,
+          });
+        },
+        changeBrightnessTemperatureColor: async (
+          brightness,
+          temperature,
+          color,
+        ) => {
+          const state = new v3.lightStates.LightState();
+
+          const convertedColor = Math.round(1000000 / temperature);
+
+          const hexCode = color.replace('#', '');
+          const r = parseInt(hexCode.substring(0, 2), 16);
+          const g = parseInt(hexCode.substring(2, 4), 16);
+          const b = parseInt(hexCode.substring(4, 6), 16);
+
+          const rbg = [r, g, b];
+
+          state.brightness(brightness);
+          state.ct(convertedColor);
+          state.rgb(rbg);
+
+          await this.hueApi.lights.setLightState(light.id, state);
         },
       });
     }
