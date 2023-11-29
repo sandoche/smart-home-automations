@@ -86,15 +86,11 @@ export class LightsService {
       this.lights.push({
         type: 'hue',
         on: async () => {
-          console.log('===========');
-          console.log(light.id);
           await this.hueApi.lights.setLightState(light.id, {
             on: true,
           });
         },
         off: async () => {
-          console.log('===========');
-          console.log(light.id);
           await this.hueApi.lights.setLightState(light.id, {
             on: false,
           });
