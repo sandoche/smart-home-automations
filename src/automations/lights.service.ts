@@ -16,6 +16,7 @@ export class LightsService {
   }
 
   async initHue() {
+    this.logger.debug('Initializing Hue');
     this.hueApi = await discovery
       .nupnpSearch()
       .then((searchResults) => {
@@ -30,6 +31,7 @@ export class LightsService {
       });
 
     this.hueLights = await this.hueApi.lights.getAll();
+    this.logger.debug(`Found ${this.hueLights.length} hue lights`);
   }
 
   async turnOff() {
