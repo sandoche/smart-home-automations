@@ -10,9 +10,6 @@ export class LightsService {
     timestamp: true,
   });
 
-  private hueApi = null;
-  private hueLights = [];
-
   private lights: lights = [];
 
   constructor(private readonly configService: ConfigService) {
@@ -20,24 +17,46 @@ export class LightsService {
   }
 
   async init() {
-    // this.logger.debug('Initializing Hue');
-    // this.hueApi = await discovery
-    //   .nupnpSearch()
-    //   .then((searchResults) => {
-    //     const host = searchResults[0].ipaddress;
-    //     return api
-    //       .createLocal(host)
-    //       .connect(this.configService.get('HUE_USER'));
-    //   })
-    //   .catch((err) => {
-    //     this.logger.error(err);
-    //     return null;
-    //   });
+    this.logger.debug('Initializing Hue');
+    const hueApi = await discovery
+      .nupnpSearch()
+      .then((searchResults) => {
+        const host = searchResults[0].ipaddress;
+        return api
+          .createLocal(host)
+          .connect(this.configService.get('HUE_USER'));
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
 
-    // this.hueLights = await this.hueApi.lights.getAll();
-    // this.logger.debug(`Found ${this.hueLights.length} hue lights`);
+    if (!hueApi) {
+      this.logger.error('Failed to initialize Hue');
+      return;
+    }
+
+    const hueLights = await hueApi.lights.getAll();
+    this.logger.debug(`Found ${hueLights.length} hue lights`);
+
+    for (const light of hueLights) {
+      this.lights.push({
+        type: 'hue',
+        on: async () => {
+          await hueApi.lights.setLightState(light.id, {
+            on: true,
+          });
+        },
+        off: async () => {
+          await hueApi.lights.setLightState(light.id, {
+            off: true,
+          });
+        },
+      });
+    }
 
     const wizLights = await discover({ addr: '192.168.68.255' });
+    this.logger.debug(`Found ${wizLights.length} wiz lights`);
 
     for (const light of wizLights) {
       this.lights.push({
@@ -55,12 +74,6 @@ export class LightsService {
   async turnOff() {
     this.logger.debug('Turning off lights');
 
-    // for (const light of this.hueLights) {
-    //   await this.hueApi.lights.setLightState(light.id, {
-    //     on: false,
-    //   });
-    // }
-
     for (const light of this.lights) {
       await light.off();
     }
@@ -68,12 +81,6 @@ export class LightsService {
 
   async turnOn() {
     this.logger.debug('Turning on lights');
-
-    // for (const light of this.hueLights) {
-    //   await this.hueApi.lights.setLightState(light.id, {
-    //     on: true,
-    //   });
-    // }
 
     for (const light of this.lights) {
       await light.on();
