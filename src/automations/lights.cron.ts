@@ -4,12 +4,14 @@ import { LightsService } from './lights.service';
 
 @Injectable()
 export class LightsCron {
-  private readonly logger = new Logger('LightsService', {
+  private readonly logger = new Logger('LightsCron', {
     timestamp: true,
   });
 
   constructor(private readonly lightsService: LightsService) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async handleCron() {}
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async handleCron() {
+    this.logger.debug('Turning off lights');
+  }
 }
