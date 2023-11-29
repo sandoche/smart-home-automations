@@ -23,11 +23,37 @@ export class LightsService {
     for (const light of wizLights) {
       this.lights.push({
         type: 'wiz',
+        isOn: async () => {
+          const pilot = await light.getPilot();
+          const isOn = pilot.result.state;
+          return isOn;
+        },
         on: async () => {
           await light.turn(true);
         },
         off: async () => {
           await light.turn(false);
+        },
+        reset: async () => {
+          await light.brightness(100);
+          await light.white(2900);
+        },
+        changeBrightnessTemperatureColor: async (
+          brightness,
+          temperature,
+          color,
+        ) => {
+          await light.brightness(brightness);
+          await light.white(temperature);
+
+          if (color) {
+            try {
+              await light.color(color);
+              this.logger.debug(`Changed color to ${color}`);
+            } catch (err) {
+              this.logger.error(err);
+            }
+          }
         },
       });
     }
@@ -59,11 +85,15 @@ export class LightsService {
       this.lights.push({
         type: 'hue',
         on: async () => {
+          console.log('===========');
+          console.log(light.id);
           await hueApi.lights.setLightState(light.id, {
             on: true,
           });
         },
         off: async () => {
+          console.log('===========');
+          console.log(light.id);
           await hueApi.lights.setLightState(light.id, {
             off: true,
           });
@@ -86,6 +116,34 @@ export class LightsService {
 
     for (const light of this.lights) {
       await light.on();
+    }
+  }
+
+  async dimmed() {
+    this.logger.debug('Dimming lights');
+
+    for (const light of this.lights) {
+      // only resets if the lamp is on
+      const isOn = await light.isOn();
+      if (!isOn) {
+        return;
+      }
+
+      await light.changeBrightnessTemperatureColor(30, 1000);
+    }
+  }
+
+  async reset() {
+    this.logger.debug('Resetting lights');
+
+    for (const light of this.lights) {
+      // only resets if the lamp is on
+      const isOn = await light.isOn();
+      if (!isOn) {
+        return;
+      }
+
+      await light.reset();
     }
   }
 }

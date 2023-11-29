@@ -29,4 +29,24 @@ export class LightsController {
       status: 'success',
     };
   }
+
+  @Get('/reset')
+  async reset(): Promise<{ status: string }> {
+    this.logger.debug('/reset called');
+    await this.lightsService.reset();
+
+    return {
+      status: 'success',
+    };
+  }
+
+  @Get('/dimmed')
+  async dimmed(): Promise<{ status: string }> {
+    this.logger.debug('/dimmed called');
+    await this.lightsService.dimmed();
+
+    return {
+      status: 'success',
+    };
+  }
 }
