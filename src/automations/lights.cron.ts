@@ -13,5 +13,6 @@ export class LightsCron {
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
     this.logger.debug('Turning off lights');
+    await this.lightsService.turnOffLights();
   }
 }

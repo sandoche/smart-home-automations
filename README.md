@@ -13,3 +13,7 @@ pnpm setup:hue
 pnpm build
 pnpm start
 ```
+
+## Documentation
+
+- https://www.npmjs.com/package/node-hue-api
