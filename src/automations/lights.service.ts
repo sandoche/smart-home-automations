@@ -11,7 +11,6 @@ export class LightsService {
   });
 
   private lights: lights = [];
-  private hueApi;
 
   constructor(private readonly configService: ConfigService) {
     this.init();
@@ -62,7 +61,7 @@ export class LightsService {
     this.logger.debug(`Found ${wizLights.length} wiz lights`);
 
     this.logger.debug('Initializing Hue');
-    this.hueApi = await discovery
+    const hueApi = await discovery
       .nupnpSearch()
       .then((searchResults) => {
         const host = searchResults[0].ipaddress;
@@ -75,32 +74,32 @@ export class LightsService {
         return null;
       });
 
-    if (!this.hueApi) {
+    if (!hueApi) {
       this.logger.error('Failed to initialize Hue');
       return;
     }
 
-    const hueLights = await this.hueApi.lights.getAll();
+    const hueLights = await hueApi.lights.getAll();
 
     for (const light of hueLights) {
       this.lights.push({
         type: 'hue',
         on: async () => {
-          await this.hueApi.lights.setLightState(light.id, {
+          await hueApi.lights.setLightState(light.id, {
             on: true,
           });
         },
         off: async () => {
-          await this.hueApi.lights.setLightState(light.id, {
+          await hueApi.lights.setLightState(light.id, {
             on: false,
           });
         },
         isOn: async () => {
-          const state = await this.hueApi.lights.getLightState(light.id);
+          const state = await hueApi.lights.getLightState(light.id);
           return state.on;
         },
         reset: async () => {
-          await this.hueApi.lights.setLightState(light.id, {
+          await hueApi.lights.setLightState(light.id, {
             bri: 254,
             ct: 366,
           });
@@ -108,24 +107,23 @@ export class LightsService {
         changeBrightnessTemperatureColor: async (
           brightness,
           temperature,
-          color,
+          // color,
         ) => {
           const state = new v3.lightStates.LightState();
 
-          const convertedColor = Math.round(1000000 / temperature);
-
-          const hexCode = color.replace('#', '');
-          const r = parseInt(hexCode.substring(0, 2), 16);
-          const g = parseInt(hexCode.substring(2, 4), 16);
-          const b = parseInt(hexCode.substring(4, 6), 16);
-
-          const rbg = [r, g, b];
+          const convertedTemperature = Math.round(1000000 / temperature);
 
           state.brightness(brightness);
-          state.ct(convertedColor);
-          state.rgb(rbg);
+          state.ct(Math.min(Math.max(convertedTemperature, 153), 500));
 
-          await this.hueApi.lights.setLightState(light.id, state);
+          // const hexCode = color.replace('#', '');
+          // const r = parseInt(hexCode.substring(0, 2), 16);
+          // const g = parseInt(hexCode.substring(2, 4), 16);
+          // const b = parseInt(hexCode.substring(4, 6), 16);
+          // const rbg = [r, g, b];
+          // state.rgb(rbg);
+
+          await hueApi.lights.setLightState(light.id, state);
         },
       });
     }
