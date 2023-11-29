@@ -17,6 +17,23 @@ export class LightsService {
   }
 
   async init() {
+    this.logger.debug('Initializing Wiz');
+    const wizLights = await discover({ addr: '192.168.68.255' });
+
+    for (const light of wizLights) {
+      this.lights.push({
+        type: 'wiz',
+        on: async () => {
+          await light.turn(true);
+        },
+        off: async () => {
+          await light.turn(false);
+        },
+      });
+    }
+
+    this.logger.debug(`Found ${wizLights.length} wiz lights`);
+
     this.logger.debug('Initializing Hue');
     const hueApi = await discovery
       .nupnpSearch()
@@ -37,7 +54,6 @@ export class LightsService {
     }
 
     const hueLights = await hueApi.lights.getAll();
-    this.logger.debug(`Found ${hueLights.length} hue lights`);
 
     for (const light of hueLights) {
       this.lights.push({
@@ -54,21 +70,7 @@ export class LightsService {
         },
       });
     }
-
-    const wizLights = await discover({ addr: '192.168.68.255' });
-    this.logger.debug(`Found ${wizLights.length} wiz lights`);
-
-    for (const light of wizLights) {
-      this.lights.push({
-        type: 'wiz',
-        on: async () => {
-          await light.turn(true);
-        },
-        off: async () => {
-          await light.turn(false);
-        },
-      });
-    }
+    this.logger.debug(`Found ${hueLights.length} hue lights`);
   }
 
   async turnOff() {
