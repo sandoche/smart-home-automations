@@ -96,7 +96,7 @@ export class LightsService {
           console.log('===========');
           console.log(light.id);
           await this.hueApi.lights.setLightState(light.id, {
-            off: true,
+            on: false,
           });
         },
         isOn: async () => {
