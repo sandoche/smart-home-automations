@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { api, discovery } from 'node-hue-api';
 import { ConfigService } from '@nestjs/config';
-import { discover, SCENES } from 'wikari';
+import { discover } from 'wikari';
 import type { lights } from './lights.type';
 
 @Injectable()
