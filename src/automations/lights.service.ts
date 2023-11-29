@@ -43,4 +43,14 @@ export class LightsService {
       });
     }
   }
+
+  async turnOn() {
+    this.logger.debug('Turning on lights');
+
+    for (const light of this.hueLights) {
+      await this.hueApi.lights.setLightState(light.id, {
+        on: true,
+      });
+    }
+  }
 }

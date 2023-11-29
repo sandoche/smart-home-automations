@@ -19,4 +19,14 @@ export class LightsController {
       status: 'success',
     };
   }
+
+  @Get('/on')
+  async on(): Promise<{ status: string }> {
+    this.logger.debug('/on called');
+    await this.lightsService.turnOn();
+
+    return {
+      status: 'success',
+    };
+  }
 }
