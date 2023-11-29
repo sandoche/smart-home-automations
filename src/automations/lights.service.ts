@@ -11,6 +11,7 @@ export class LightsService {
   });
 
   private lights: lights = [];
+  private hueApi;
 
   constructor(private readonly configService: ConfigService) {
     this.init();
@@ -61,7 +62,7 @@ export class LightsService {
     this.logger.debug(`Found ${wizLights.length} wiz lights`);
 
     this.logger.debug('Initializing Hue');
-    const hueApi = await discovery
+    this.hueApi = await discovery
       .nupnpSearch()
       .then((searchResults) => {
         const host = searchResults[0].ipaddress;
@@ -74,12 +75,12 @@ export class LightsService {
         return null;
       });
 
-    if (!hueApi) {
+    if (!this.hueApi) {
       this.logger.error('Failed to initialize Hue');
       return;
     }
 
-    const hueLights = await hueApi.lights.getAll();
+    const hueLights = await this.hueApi.lights.getAll();
 
     for (const light of hueLights) {
       this.lights.push({
@@ -87,14 +88,14 @@ export class LightsService {
         on: async () => {
           console.log('===========');
           console.log(light.id);
-          await hueApi.lights.setLightState(light.id, {
+          await this.hueApi.lights.setLightState(light.id, {
             on: true,
           });
         },
         off: async () => {
           console.log('===========');
           console.log(light.id);
-          await hueApi.lights.setLightState(light.id, {
+          await this.hueApi.lights.setLightState(light.id, {
             off: true,
           });
         },
