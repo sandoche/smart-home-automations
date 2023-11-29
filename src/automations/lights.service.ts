@@ -8,14 +8,15 @@ export class LightsService {
     timestamp: true,
   });
 
+  private hueApi = null;
   private hueLights = [];
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.initHue();
+  }
 
-  async turnOffLights() {
-    this.logger.debug('Turning off lights');
-
-    const hueApi = await discovery
+  async initHue() {
+    this.hueApi = await discovery
       .nupnpSearch()
       .then((searchResults) => {
         const host = searchResults[0].ipaddress;
@@ -28,11 +29,15 @@ export class LightsService {
         return null;
       });
 
-    const hueLights = await hueApi.lights.getAll();
+    this.hueLights = await this.hueApi.lights.getAll();
+  }
 
-    for (const light of hueLights) {
-      await hueApi.lights.setLightState(light.id, {
-        on: true,
+  async turnOff() {
+    this.logger.debug('Turning off lights');
+
+    for (const light of this.hueLights) {
+      await this.hueApi.lights.setLightState(light.id, {
+        on: false,
       });
     }
   }

@@ -10,9 +10,9 @@ export class LightsCron {
 
   constructor(private readonly lightsService: LightsService) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_12_HOURS)
   async handleCron() {
     this.logger.debug('Turning off lights');
-    await this.lightsService.turnOffLights();
+    await this.lightsService.turnOff();
   }
 }
