@@ -43,19 +43,20 @@ export class LightsService {
         changeBrightnessTemperatureColor: async (
           brightness,
           temperature,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           color,
         ) => {
           await light.brightness(brightness);
           await light.white(temperature);
 
-          if (color) {
-            try {
-              await light.color(color);
-              this.logger.debug(`Changed color to ${color}`);
-            } catch (err) {
-              this.logger.error(err);
-            }
-          }
+          // if (color) {
+          //   try {
+          //     await light.color(color);
+          //     this.logger.debug(`Changed color to ${color}`);
+          //   } catch (err) {
+          //     this.logger.error(err);
+          //   }
+          // }
         },
       });
     }
@@ -109,11 +110,12 @@ export class LightsService {
         changeBrightnessTemperatureColor: async (
           brightness,
           temperature,
-          // color,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          color,
         ) => {
           const state = new v3.lightStates.LightState();
 
-          const convertedTemperature = Math.round(1000000 / temperature);
+          const convertedTemperature = -0.077111 * temperature + 654.222;
 
           state.brightness(brightness);
           state.ct(Math.min(Math.max(convertedTemperature, 153), 500));
@@ -148,17 +150,21 @@ export class LightsService {
     }
   }
 
-  async dimmed() {
+  async update(brightness: number, temperature: number, color?: `#${string}`) {
     this.logger.debug('Dimming lights');
 
     for (const light of this.lights) {
-      // only resets if the lamp is on
+      // only update if the lamp is on
       const isOn = await light.isOn();
       if (!isOn) {
         return;
       }
 
-      await light.changeBrightnessTemperatureColor(30, 1000);
+      await light.changeBrightnessTemperatureColor(
+        brightness,
+        temperature,
+        color,
+      );
     }
   }
 
