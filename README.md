@@ -8,7 +8,7 @@
   </a>
 </p>
 
-Smart automation with hue and wiz bulbs, this contains a tiny vue app, a simple API for tuning on, off, dimming and resetting lights, and a cron job for making autoamtions.
+Smart automation with hue and wiz bulbs, this contains a tiny vue app, a simple API for tuning on, off, dimming and resetting lights, and a cron job for making automations.
 
 ## 🏷️ Devices supported
 
@@ -65,7 +65,3 @@ If you like this project, feel free to donate:
 [MIT License](./LICENSE)
 
 Copyright (c) Sandoche Adittane
-
-```
-
-```
