@@ -65,7 +65,3 @@ If you like this project, feel free to donate:
 [MIT License](./LICENSE)
 
 Copyright (c) Sandoche Adittane
-
-```
-
-```
