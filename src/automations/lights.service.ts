@@ -14,7 +14,7 @@ export class LightsService {
 
   constructor(private readonly configService: ConfigService) {
     this.setupWizLights();
-    this.setupHueLights();
+    // this.setupHueLights();
   }
 
   async setupWizLights() {
