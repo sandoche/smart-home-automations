@@ -31,10 +31,10 @@ pnpm start
 
 ## ⚙️ API
 
-- `/on` - Turn on all lights
-- `/off` - Turn off all lights
-- `/reset` - Reset to default settings of the lights that are on
-- `/update/:brightness/:temperature/:color` - Update the lights that are on with the given parameters
+- `/lights/on` - Turn on all lights
+- `/lights/off` - Turn off all lights
+- `/lights/reset` - Reset to default settings of the lights that are on
+- `/lights/update/:brightness/:temperature/:color` - Update the lights that are on with the given parameters
 
 ## 📝 Notes
 

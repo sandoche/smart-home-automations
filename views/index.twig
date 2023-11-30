@@ -80,25 +80,25 @@
 
                         const turnOff = async () => {
                             isDisabled.value = true
-                            await fetch('/off')
+                            await fetch('/lights/off')
                             isDisabled.value = false
                         }
 
                         const turnOn = async () => {
                             isDisabled.value = true
-                            await fetch('/on')
+                            await fetch('/lights/on')
                             isDisabled.value = false
                         }
 
                         const reset = async () => {
                             isDisabled.value = true
-                            await fetch('/reset')
+                            await fetch('/lights/reset')
                             isDisabled.value = false
                         }
 
                         const dimLights = async () => {
                             isDisabled.value = true
-                            await fetch('/update/50/2000/FE8714')
+                            await fetch('/lights/update/50/2000/FE8714')
                             isDisabled.value = false
                         }
 
