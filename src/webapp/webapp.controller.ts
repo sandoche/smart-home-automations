@@ -5,6 +5,6 @@ export class WebappController {
   @Get()
   @Render('index')
   root() {
-    return { message: 'Hello world!' };
+    return {};
   }
 }
