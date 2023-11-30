@@ -18,7 +18,9 @@ export class LightsService {
 
   async init() {
     this.logger.debug('Initializing Wiz');
-    const wizLights = await discover({ addr: '192.168.68.255' });
+    const wizLights = await discover({
+      addr: this.configService.get('IP_GATEWAY'),
+    });
 
     for (const light of wizLights) {
       this.lights.push({
