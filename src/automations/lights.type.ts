@@ -1,4 +1,5 @@
 export type light = {
+  id: string;
   type: 'hue' | 'wiz';
   isOn: () => Promise<boolean>;
   on: () => Promise<void>;

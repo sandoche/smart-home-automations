@@ -13,10 +13,11 @@ export class LightsService {
   private lights: lights = [];
 
   constructor(private readonly configService: ConfigService) {
-    this.init();
+    this.setupWizLights();
+    this.setupHueLights();
   }
 
-  async init() {
+  async setupWizLights() {
     this.logger.debug('Initializing Wiz');
     const wizLights = await discover({
       addr: this.configService.get('IP_GATEWAY'),
@@ -24,6 +25,7 @@ export class LightsService {
 
     for (const light of wizLights) {
       this.lights.push({
+        id: light.macIdentifier,
         type: 'wiz',
         isOn: async () => {
           const pilot = await light.getPilot();
@@ -62,7 +64,9 @@ export class LightsService {
     }
 
     this.logger.debug(`Found ${wizLights.length} wiz lights`);
+  }
 
+  async setupHueLights() {
     this.logger.debug('Initializing Hue');
     const hueApi = await discovery
       .nupnpSearch()
@@ -86,6 +90,7 @@ export class LightsService {
 
     for (const light of hueLights) {
       this.lights.push({
+        id: light.id,
         type: 'hue',
         on: async () => {
           await hueApi.lights.setLightState(light.id, {
