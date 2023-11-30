@@ -42,8 +42,8 @@ export class LightsController {
 
   @Get('/update/:brightness/:temperature/:color')
   async update(
-    @Param('brightness') brightness: number,
-    @Param('temperature') temperature: number,
+    @Param('brightness') brightness: string,
+    @Param('temperature') temperature: string,
     @Param('color') color: string,
   ): Promise<{ status: string }> {
     this.logger.debug('/update/:brightness/:temperature/:color called', {
@@ -52,7 +52,11 @@ export class LightsController {
       color,
     });
 
-    await this.lightsService.update(brightness, temperature, `#${color}`);
+    await this.lightsService.update(
+      parseInt(brightness),
+      parseInt(temperature),
+      `#${color}`,
+    );
 
     return {
       status: 'success',
