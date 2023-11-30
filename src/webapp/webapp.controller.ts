@@ -1,11 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 
 @Controller()
 export class WebappController {
   @Get()
-  getHello(): any {
-    return {
-      test: 'Hello World!',
-    };
+  @Render('index')
+  root() {
+    return { message: 'Hello world!' };
   }
 }

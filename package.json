@@ -24,6 +24,7 @@
     "node-hue-api": "5.0.0-beta.16",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "twig": "^1.17.1",
     "wikari": "^0.1.0"
   },
   "devDependencies": {
