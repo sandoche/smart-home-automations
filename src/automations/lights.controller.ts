@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { LightsService } from './lights.service';
 import { Logger } from '@nestjs/common';
 
@@ -40,10 +40,23 @@ export class LightsController {
     };
   }
 
-  @Get('/dimmed')
-  async dimmed(): Promise<{ status: string }> {
-    this.logger.debug('/dimmed called');
-    await this.lightsService.dimmed();
+  @Get('/update/:brightness/:temperature/:color')
+  async update(
+    @Param('brightness') brightness: string,
+    @Param('temperature') temperature: string,
+    @Param('color') color: string,
+  ): Promise<{ status: string }> {
+    this.logger.debug('/update/:brightness/:temperature/:color called', {
+      brightness,
+      temperature,
+      color,
+    });
+
+    await this.lightsService.update(
+      parseInt(brightness),
+      parseInt(temperature),
+      `#${color}`,
+    );
 
     return {
       status: 'success',
