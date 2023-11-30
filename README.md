@@ -42,7 +42,7 @@ pnpm start
 
 ## 📖 Documentation
 
-- https://www.npmjs.com/package/node-hue-api
+- https://github.com/uditkarode/wikari
 - https://github.com/peter-murray/node-hue-api
 
 ## ⭐️ Show your support
