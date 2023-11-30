@@ -21,4 +21,10 @@ export class LightsCron {
     this.logger.debug('Dimming lights');
     await this.lightsService.update(30, 1500, '#FE8714');
   }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async updatesListOfWiz() {
+    this.logger.debug('Updating list of Wiz lights');
+    await this.lightsService.setupWizLights();
+  }
 }
