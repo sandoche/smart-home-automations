@@ -138,7 +138,11 @@ export class LightsService {
     this.logger.debug('Turning off lights');
 
     for (const light of this.lights) {
-      await light.off();
+      try {
+        await light.off();
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 
@@ -146,7 +150,11 @@ export class LightsService {
     this.logger.debug('Turning on lights');
 
     for (const light of this.lights) {
-      await light.on();
+      try {
+        await light.on();
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 
@@ -159,12 +167,15 @@ export class LightsService {
       if (!isOn) {
         return;
       }
-
-      await light.changeBrightnessTemperatureColor(
-        brightness,
-        temperature,
-        color,
-      );
+      try {
+        await light.changeBrightnessTemperatureColor(
+          brightness,
+          temperature,
+          color,
+        );
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 
@@ -177,8 +188,11 @@ export class LightsService {
       if (!isOn) {
         return;
       }
-
-      await light.reset();
+      try {
+        await light.reset();
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 }

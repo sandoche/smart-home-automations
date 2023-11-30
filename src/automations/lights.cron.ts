@@ -19,6 +19,6 @@ export class LightsCron {
   @Cron(CronExpression.EVERY_DAY_AT_8PM)
   async afternoonCron() {
     this.logger.debug('Dimming lights');
-    // await this.lightsService.dimmed();
+    await this.lightsService.update(30, 1500, '#FE8714');
   }
 }
