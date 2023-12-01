@@ -24,12 +24,11 @@ export class LightsService {
     });
 
     for (const light of wizLights) {
-      const existingLight = this.lights.find(
-        (l) => l.id === light.macIdentifier,
-      );
+      const existingLight = this.lights.find((l) => l.id === light.address);
+
       if (!existingLight) {
         this.lights.push({
-          id: light.macIdentifier,
+          id: light.address,
           type: 'wiz',
           isOn: async () => {
             const pilot = await light.getPilot();
