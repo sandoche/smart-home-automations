@@ -26,45 +26,50 @@ export class LightsService {
     for (const light of wizLights) {
       const existingLight = this.lights.find((l) => l.id === light.address);
 
-      if (!existingLight) {
-        this.lights.push({
-          id: light.address,
-          type: 'wiz',
-          isOn: async () => {
-            const pilot = await light.getPilot();
-            const isOn = pilot.result.state;
-            return isOn;
-          },
-          on: async () => {
-            await light.turn(true);
-          },
-          off: async () => {
-            await light.turn(false);
-          },
-          reset: async () => {
-            await light.brightness(100);
-            await light.white(2900);
-          },
-          changeBrightnessTemperatureColor: async (
-            brightness,
-            temperature,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            color,
-          ) => {
-            await light.brightness(brightness);
-            await light.white(temperature);
-
-            // if (color) {
-            //   try {
-            //     await light.color(color);
-            //     this.logger.debug(`Changed color to ${color}`);
-            //   } catch (err) {
-            //     this.logger.error(err);
-            //   }
-            // }
-          },
-        });
+      if (existingLight) {
+        this.logger.debug(`Removing 1 wiz light`);
+        const index = this.lights.indexOf(existingLight);
+        this.lights.splice(index, 1);
       }
+
+      this.logger.debug(`Adding 1 wiz light`);
+      this.lights.push({
+        id: light.address,
+        type: 'wiz',
+        isOn: async () => {
+          const pilot = await light.getPilot();
+          const isOn = pilot.result.state;
+          return isOn;
+        },
+        on: async () => {
+          await light.turn(true);
+        },
+        off: async () => {
+          await light.turn(false);
+        },
+        reset: async () => {
+          await light.brightness(100);
+          await light.white(2900);
+        },
+        changeBrightnessTemperatureColor: async (
+          brightness,
+          temperature,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          color,
+        ) => {
+          await light.brightness(brightness);
+          await light.white(temperature);
+
+          // if (color) {
+          //   try {
+          //     await light.color(color);
+          //     this.logger.debug(`Changed color to ${color}`);
+          //   } catch (err) {
+          //     this.logger.error(err);
+          //   }
+          // }
+        },
+      });
     }
 
     this.logger.debug(`Found ${wizLights.length} wiz lights`);
