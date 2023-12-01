@@ -12,7 +12,7 @@ export class LightsController {
 
   @Get('/off')
   async off(): Promise<{ status: string }> {
-    this.logger.debug('/off called');
+    this.logger.debug('/lights/off called');
     await this.lightsService.turnOff();
 
     return {
@@ -22,7 +22,7 @@ export class LightsController {
 
   @Get('/on')
   async on(): Promise<{ status: string }> {
-    this.logger.debug('/on called');
+    this.logger.debug('/lights/on called');
     await this.lightsService.turnOn();
 
     return {
@@ -32,7 +32,7 @@ export class LightsController {
 
   @Get('/reset')
   async reset(): Promise<{ status: string }> {
-    this.logger.debug('/reset called');
+    this.logger.debug('/lights/reset called');
     await this.lightsService.reset();
 
     return {
@@ -40,7 +40,7 @@ export class LightsController {
     };
   }
 
-  @Get('/update/:brightness/:temperature/:color')
+  @Get('/lights/update/:brightness/:temperature/:color')
   async update(
     @Param('brightness') brightness: string,
     @Param('temperature') temperature: string,
@@ -57,6 +57,38 @@ export class LightsController {
       parseInt(temperature),
       `#${color}`,
     );
+
+    return {
+      status: 'success',
+    };
+  }
+
+  @Get('/test')
+  async test(): Promise<{ status: string }> {
+    this.logger.debug('/lights/test called');
+
+    await this.lightsService.turnOn();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.reset();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.update(50, 2000, '#FE8714');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.update(40, 1750, '#FE8714');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.update(30, 1500, '#FE8714');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.update(20, 1000, '#FE8714');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.reset();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await this.lightsService.turnOff();
 
     return {
       status: 'success',
