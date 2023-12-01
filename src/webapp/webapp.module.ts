@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { WebappController } from './webapp.controller';
 
 @Module({
-  controllers: [WebappController]
+  controllers: [WebappController],
 })
 export class WebappModule {}
