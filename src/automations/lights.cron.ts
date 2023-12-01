@@ -46,9 +46,15 @@ export class LightsCron {
     await this.lightsService.update(10, 1000, '#FE8714');
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  async updatesListOfWiz() {
-    this.logger.debug('Updating list of Wiz lights');
+  @Cron('5-55/10 * * * *')
+  async updatesListOfWizOne() {
+    this.logger.debug('Updating list of Wiz lights every 10th from 5th minute');
+    await this.lightsService.setupWizLights();
+  }
+
+  @Cron('8-58/10 * * * *')
+  async updatesListOfWizTwo() {
+    this.logger.debug('Updating list of Wiz lights every 10th from 8th minute');
     await this.lightsService.setupWizLights();
   }
 }
